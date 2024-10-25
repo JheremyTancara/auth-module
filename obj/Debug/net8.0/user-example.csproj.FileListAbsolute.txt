@@ -103,3 +103,15 @@ C:\Jheremy_User\example-endpoint\user-example\obj\Debug\net8.0\refint\user-examp
 C:\Jheremy_User\example-endpoint\user-example\obj\Debug\net8.0\user-example.pdb
 C:\Jheremy_User\example-endpoint\user-example\obj\Debug\net8.0\user-example.genruntimeconfig.cache
 C:\Jheremy_User\example-endpoint\user-example\obj\Debug\net8.0\ref\user-example.dll
+C:\Jheremy_User\example-endpoint\user-example\obj\Debug\net8.0\user-example.sourcelink.json
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\DotNetEnv.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.Bcl.TimeProvider.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\Sprache.dll
+C:\Jheremy_User\example-endpoint\user-example\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
