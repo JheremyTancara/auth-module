@@ -40,10 +40,6 @@ namespace Api.Controllers
         public async Task<IActionResult> Create([FromBody] RegisterUserDTO userDTO)
         {
             var newUser = await userRepository.CreateAsync(userDTO);
-            if (newUser.Username.Equals("error_409_validations"))
-            {
-                return Conflict(ErrorUtilities.UniqueName("User"));
-            }
 
             return CreatedAtAction(nameof(GetById), new { id = newUser.UserID }, userDTO);
         }

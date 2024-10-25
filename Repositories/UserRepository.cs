@@ -29,26 +29,21 @@ namespace Api.Services
 
         public override async Task<User> CreateAsync(RegisterUserDTO newUserDTO)
         {
-            if (await genericService.IsBrandNameUnique(_context, newUserDTO.Username))
+            var user = new User
             {
-                var user = new User
-                {
-                    UserID = await _context.Users.CountAsync() + 1,
-                    Username = newUserDTO.Username,
-                    Email = newUserDTO.Email,
-                    Password = newUserDTO.Password,
-                    DateOfBirth = DataTransformationService.ConvertToDateTime(newUserDTO.DateOfBirth),
-                    SubscriptionLevel = DataTransformationService.ConvertToSubscriptionLevel(newUserDTO.SubscriptionLevel),
-                    ProfilePicture = DataTransformationService.ConvertToProfileSkin(newUserDTO.ProfilePicture)
-                };
+                UserID = await _context.Users.CountAsync() + 1,
+                Username = newUserDTO.Username,
+                Email = newUserDTO.Email,
+                Password = newUserDTO.Password,
+                DateOfBirth = DataTransformationService.ConvertToDateTime(newUserDTO.DateOfBirth),
+                SubscriptionLevel = DataTransformationService.ConvertToSubscriptionLevel(newUserDTO.SubscriptionLevel),
+                ProfilePicture = DataTransformationService.ConvertToProfileSkin(newUserDTO.ProfilePicture)
+            };
 
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-                return user;
-            }
-
-            throw new Exception("Username is not unique.");
+            return user;
         }
 
         public override async Task Update(int id, RegisterUserDTO userDTO)
