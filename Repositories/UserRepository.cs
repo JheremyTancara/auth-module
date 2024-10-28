@@ -37,7 +37,8 @@ namespace Api.Services
                 Password = newUserDTO.Password,
                 DateOfBirth = DataTransformationService.ConvertToDateTime(newUserDTO.DateOfBirth),
                 SubscriptionLevel = DataTransformationService.ConvertToSubscriptionLevel(newUserDTO.SubscriptionLevel),
-                ProfilePicture = DataTransformationService.ConvertToProfileSkin(newUserDTO.ProfilePicture)
+                ProfilePicture = DataTransformationService.ConvertToProfileSkin(newUserDTO.ProfilePicture),
+                Role = UserRole.User
             };
 
             _context.Users.Add(user);
@@ -58,29 +59,22 @@ namespace Api.Services
                 existingUser.DateOfBirth = DataTransformationService.ConvertToDateTime(userDTO.DateOfBirth);
                 existingUser.SubscriptionLevel = DataTransformationService.ConvertToSubscriptionLevel(userDTO.SubscriptionLevel);
                 existingUser.ProfilePicture = DataTransformationService.ConvertToProfileSkin(userDTO.ProfilePicture);
+                existingUser.Role = UserRole.User;
                 await _context.SaveChangesAsync();
             }
         }
 
-                public async Task<User?> Register(RegisterUserDTO registerUserDto)
-        {
-            // Llama al método CreateAsync ya definido para registrar al usuario
-            return await CreateAsync(registerUserDto);
-        }
-
         public async Task<User?> Authenticate(string username, string password)
         {
-            // Aquí se verifica si el usuario existe y si la contraseña coincide
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == username);
 
-            // Comprueba si el usuario fue encontrado y si la contraseña es correcta
-            if (user != null && user.Password == password) // Recuerda que deberías usar un hashing para la contraseña
+            if (user != null && user.Password == password) 
             {
                 return user;
             }
 
-            return null; // Si no se encuentra el usuario o la contraseña no coincide
+            return null; 
         }
     }
 }

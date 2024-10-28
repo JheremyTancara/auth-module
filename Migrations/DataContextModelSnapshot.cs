@@ -3,8 +3,6 @@ using System;
 using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
@@ -44,6 +42,9 @@ namespace user_example.Migrations
                     b.Property<int>("ProfilePicture")
                         .HasColumnType("int");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<int>("SubscriptionLevel")
                         .HasColumnType("int");
 
@@ -54,6 +55,19 @@ namespace user_example.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserID = 1,
+                            DateOfBirth = new DateTime(2024, 10, 28, 1, 5, 16, 787, DateTimeKind.Local).AddTicks(2511),
+                            Email = "admin@domain.com",
+                            Password = "admin",
+                            ProfilePicture = 0,
+                            Role = 1,
+                            SubscriptionLevel = 0,
+                            Username = "admin"
+                        });
                 });
 #pragma warning restore 612, 618
         }

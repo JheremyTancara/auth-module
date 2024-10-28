@@ -1,77 +1,97 @@
-using Api.Models;
-using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Api.Models;
+using Microsoft.IdentityModel.Tokens;
+using Api.Data;
 
-public class JwtService
+namespace Api.Utilities
 {
-    private readonly IConfiguration _configuration;
-
-    public JwtService(IConfiguration configuration)
+    public class JwtService
     {
-        _configuration = configuration;
-    }
+        private readonly string _secretKey;
+        private readonly string _issuer;
+        private readonly string _audience;
 
-    public string GenerateToken(User user)
-    {
-        var claims = new[]
+        public JwtService(IConfiguration configuration)
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("UserID", user.UserID.ToString())
-        };
+            _secretKey = configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key cannot be null.");
+            _issuer = configuration["Jwt:Issuer"] ?? throw new ArgumentNullException("Jwt:Issuer cannot be null.");
+            _audience = configuration["Jwt:Audience"] ?? throw new ArgumentNullException("Jwt:Audience cannot be null.");
+        }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(60),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public ClaimsPrincipal ValidateToken(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-        
-        try
+        public string GenerateToken(User user)
         {
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            if (user == null)
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = _configuration["Jwt:Issuer"],
-                ValidateAudience = true,
-                ValidAudience = _configuration["Jwt:Audience"],
-                ValidateLifetime = true // Puedes validar también la expiración del token
-            }, out SecurityToken validatedToken);
-
-            // Aquí validas si el tipo de token es un JwtSecurityToken
-            if (validatedToken is JwtSecurityToken jwtToken)
-            {
-                // Puedes realizar otras validaciones aquí si lo necesitas
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
             }
 
-            return principal; // Retorna el ClaimsPrincipal
+            var claims = new[]
+            {
+                new Claim("UserID", user.UserID.ToString()),
+                new Claim(ClaimTypes.Name, user.Username ?? string.Empty),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        catch (SecurityTokenExpiredException)
+
+        public static dynamic validarToken(ClaimsIdentity identity, DataContext context)
         {
-            // Maneja el caso donde el token ha expirado
-            throw new SecurityTokenExpiredException("Token has expired.");
-        }
-        catch (SecurityTokenException ex)
-        {
-            // Maneja otros tipos de excepciones de seguridad
-            throw new SecurityTokenException("Token is invalid.", ex);
+            try
+            {
+                if (identity.Claims.Count() == 0) 
+                {
+                    return new
+                    {
+                        success = false,
+                        message = "Verify if you are sending a valid token",
+                        result = ""
+                    };
+                }
+
+                var id = identity.Claims.FirstOrDefault(x => x.Type == "UserID")?.Value;
+                if (string.IsNullOrEmpty(id)) 
+                {
+                    return new
+                    {
+                        success = false,
+                        message = "User ID not found in claims",
+                        result = ""
+                    };
+                }
+
+                var usuario = context.Users.FirstOrDefault(x => x.UserID.ToString() == id);
+                
+                return new
+                {
+                    success = true,
+                    message = "Success",
+                    result = usuario
+                };
+            }
+            catch (Exception ex)
+            {
+                return new
+                {
+                    success = false,
+                    message = "Exception: " + ex.Message,
+                    result = ""
+                };
+            }
         }
     }
-
 }

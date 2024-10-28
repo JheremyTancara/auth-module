@@ -9,4 +9,5 @@ public class User
     public DateTime DateOfBirth { get; set; } 
     public SubscriptionLevel SubscriptionLevel { get; set; }
     public ProfileSkin ProfilePicture { get; set; }
+    public UserRole Role { get; set; }
 }
