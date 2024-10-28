@@ -1,6 +1,5 @@
 using Api.Data;
 using Api.DTOs;
-using Api.Models;
 using Api.Services;
 using Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +29,7 @@ namespace Api.Controllers
             var user = await _userRepository.Authenticate(loginDto.Username, loginDto.Password);
             if (user == null)
             {
-                return Unauthorized("Credenciales inválidas.");
+                return Unauthorized("Invalid credentials.");
             }
 
             var token = _jwtService.GenerateToken(user);
@@ -42,6 +41,11 @@ namespace Api.Controllers
         public IActionResult ValidateToken()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+            
             var rToken = JwtService.validarToken(identity, _context); 
 
             if (!rToken.success)
@@ -49,7 +53,7 @@ namespace Api.Controllers
                 return Unauthorized(new { message = rToken.message });
             }
 
-            return Ok(new { message = "Token válido", user = rToken.result });
+            return Ok(new { message = "Token is valid", user = rToken.result });
         }
     }
 }

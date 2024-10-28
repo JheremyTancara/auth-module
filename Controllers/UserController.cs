@@ -27,6 +27,12 @@ namespace Api.Controllers
         public async Task<ActionResult<User>> GetUserProfile()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+
             var rToken = JwtService.validarToken(identity, _context);
             if (!rToken.success) return Unauthorized(rToken);
 
@@ -47,6 +53,12 @@ namespace Api.Controllers
         public async Task<ActionResult<IEnumerable<User>>> Get()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+            
             var rToken = JwtService.validarToken(identity, _context);
             if (!rToken.success) return Unauthorized(rToken);
 
@@ -66,6 +78,12 @@ namespace Api.Controllers
         public async Task<ActionResult<User>> GetById(int id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+            
             var rToken = JwtService.validarToken(identity, _context);
             if (!rToken.success) return Unauthorized(rToken);
 
@@ -90,6 +108,12 @@ namespace Api.Controllers
         public async Task<IActionResult> Create([FromBody] RegisterUserDTO userDTO)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+            
             var rToken = JwtService.validarToken(identity, _context);
             if (!rToken.success) return Unauthorized(rToken);
 
@@ -109,6 +133,12 @@ namespace Api.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] RegisterUserDTO userDTO)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            
+            if (identity == null)
+            {
+                return Unauthorized(new { message = "Could not retrieve user identity." });
+            }
+            
             var rToken = JwtService.validarToken(identity, _context);
             if (!rToken.success) return Unauthorized(rToken);
 

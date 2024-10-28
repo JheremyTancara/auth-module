@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.Http,
         Scheme = "bearer"
     });
-z
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -63,10 +63,28 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+        ValidIssuer = jwtSettings["Issuer"] ?? throw new ArgumentNullException("Issuer is missing in JWT settings."),
+        ValidAudience = jwtSettings["Audience"] ?? throw new ArgumentNullException("Audience is missing in JWT settings."),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new ArgumentNullException("Key is missing in JWT settings."))
+        )
     };
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new LowercaseControllerModelConvention());
 });
 
 var connectionString = builder.Configuration.GetConnectionString("MySQLConnection");
@@ -87,8 +105,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.UseCors("AllowAllOrigins");
 
 app.MapControllers();
 
@@ -104,7 +126,7 @@ public class LowercaseControllerModelConvention : IControllerModelConvention
         {
             var attributeRouteModel = selectorModel.AttributeRouteModel;
 
-            if (attributeRouteModel != null)
+            if (attributeRouteModel?.Template != null)
             {
                 attributeRouteModel.Template = attributeRouteModel.Template.ToLower();
             }
