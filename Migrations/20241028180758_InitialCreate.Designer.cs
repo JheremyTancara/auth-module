@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace user_example.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241028050516_InitialCreate")]
+    [Migration("20241028180758_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace user_example.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -65,9 +65,9 @@ namespace user_example.Migrations
                         new
                         {
                             UserID = 1,
-                            DateOfBirth = new DateTime(2024, 10, 28, 1, 5, 16, 787, DateTimeKind.Local).AddTicks(2511),
+                            DateOfBirth = new DateTime(2024, 10, 28, 14, 7, 58, 364, DateTimeKind.Local).AddTicks(1205),
                             Email = "admin@domain.com",
-                            Password = "admin",
+                            Password = "ADmin123.",
                             ProfilePicture = 0,
                             Role = 1,
                             SubscriptionLevel = 0,

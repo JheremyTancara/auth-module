@@ -21,7 +21,7 @@ namespace Api.Data
                 UserID = 1,
                 Username = "admin",
                 Email = "admin@domain.com",
-                Password = "admin", 
+                Password = "ADmin123.", 
                 DateOfBirth = DateTime.Now,  
                 Role = UserRole.Admin
             });
